@@ -1,11 +1,12 @@
-public class Trou extends Obstacle {
-    private final int tailleMax = 25;
+public final class Trou extends Obstacle{
 
-    public boolean peutPasser(Animal animal) {
-        return animal.getTaille() <= tailleMax;
+    private int tailleMax;
+
+    public Trou(Point position, int tailleMax){
+        super(position);
+        this.tailleMax = tailleMax;
     }
-
-    public String messageErreur() {
-        return "L'animal est trop grand pour passer dans le trou";
+    public boolean peutPasser(Animal animal){
+        return animal.getTaille() <= tailleMax;
     }
 }

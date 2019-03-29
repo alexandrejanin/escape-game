@@ -1,5 +1,8 @@
-public abstract class Obstacle extends Entite {
+public abstract class Obstacle extends Entite{
+
     public abstract boolean peutPasser(Animal animal);
 
-    public abstract String messageErreur();
+    public Obstacle(Point position){
+        super(position);
+    }
 }

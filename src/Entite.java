@@ -1,9 +1,8 @@
-public abstract class Entite {
+public abstract class Entite{
+
     protected Point position;
-
-    public Point getPosition() {
-        return position;
+    
+    protected Entite(Point position){
+        this.position = position;
     }
-
-    //public abstract String couleur();
 }

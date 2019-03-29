@@ -1,16 +1,14 @@
-public class Point {
-    public int x, y;
+public class Point{
 
-    public Point() {
-        this(0, 0);
-    }
+    private int x;
+    private int y;
 
-    public Point(int x, int y) {
+    public Point(int x, int y){
         this.x = x;
         this.y = y;
     }
 
-    public String toString() {
-        return "(" + x + ", " + y + ")";
+    public String toString(){
+        return "(" + x +"," + y + ")";
     }
 }

@@ -1,11 +1,14 @@
-public class Rocher extends Obstacle {
-    private final int tailleMin = 50;
+public final class Rocher extends Obstacle{
 
-    public boolean peutPasser(Animal animal) {
+    private int tailleMin;
+
+    public Rocher(Point position, int tailleMin){
+        super(position);
+        this.tailleMin = tailleMin;
+    }
+
+    public boolean peutPasser(Animal animal){
         return animal.getTaille() >= tailleMin;
     }
-
-    public String messageErreur() {
-        return "L'animal est trop petit pour passer au-dessus du rocher";
-    }
+    
 }
