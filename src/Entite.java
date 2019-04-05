@@ -1,8 +1,8 @@
 public abstract class Entite{
 
-    protected Point position;
+    protected Vecteur position;
     
-    protected Entite(Point position){
+    protected Entite(Vecteur position){
         this.position = position;
     }
 }

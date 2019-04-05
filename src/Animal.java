@@ -6,7 +6,7 @@ public final class Animal extends Entite{
     private final int taille;
     private final String[] proies;
 
-    private Animal(Point position, String nom, int appetit, int mobilite, int taille, String[] proies){
+    private Animal(Vecteur position, String nom, int appetit, int mobilite, int taille, String[] proies){
         super(position);
         this.nom = nom;
         this.appetit = appetit;
@@ -15,7 +15,7 @@ public final class Animal extends Entite{
         this.proies = proies;
     }
 
-    public static Animal Lion(Point position){
+    public static Animal Lion(Vecteur position){
         return new Animal(
             position,
             "Lion",
@@ -26,7 +26,7 @@ public final class Animal extends Entite{
         );
     }
 
-    public static Animal Gazelle(Point position){
+    public static Animal Gazelle(Vecteur position){
         return new Animal(
             position,
             "Gazelle",

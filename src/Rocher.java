@@ -2,7 +2,7 @@ public final class Rocher extends Obstacle{
 
     private int tailleMin;
 
-    public Rocher(Point position, int tailleMin){
+    public Rocher(Vecteur position, int tailleMin){
         super(position);
         this.tailleMin = tailleMin;
     }
