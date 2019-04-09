@@ -63,21 +63,15 @@ public class Labyrinthe{
         }
     }
 
-    public String toString(){
-        String string = "";
-        for(int y = 0;y<labyrinthe.length;y++){
-            for(int x=0;x<labyrinthe[y].length;x++){
-                switch (labyrinthe[y][x]){
-                    case Mur:
-                        string += "#";
-                    break;
-                    case Sol:
-                        string += " ";
-                    break;
-                }
-            }
-            string += "\n";
-        }
-        return string;
+    public int getLargeur(){
+        return labyrinthe[0].length;
+    }
+
+    public int getLongueur(){
+        return labyrinthe.length;
+    }
+
+    public Case getCase(int x, int y){
+        return labyrinthe[y][x];
     }
 }
