@@ -1,35 +1,42 @@
-public class Rectangle{
-    private int x,y,largeur,hauteur;
+public class Rectangle {
+    private int x, y, largeur, hauteur;
 
-    public Rectangle(int x,int y,int largeur,int hauteur){
+    public Rectangle(int x, int y, int largeur, int hauteur) {
         this.x = x;
         this.y = y;
         this.largeur = largeur;
         this.hauteur = hauteur;
     }
 
-    public int getX(){
+    public int getX() {
         return x;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
-    public int getLargeur(){
+
+    public int getLargeur() {
         return largeur;
     }
-    public int getHauteur(){
+
+    public int getHauteur() {
         return hauteur;
     }
-    public int getDroite(){
-        return x+largeur;
+
+    public int getDroite() {
+        return x + largeur;
     }
-    public int getGauche(){
+
+    public int getGauche() {
         return x;
     }
-    public int getHaut(){
+
+    public int getHaut() {
         return y;
     }
-    public int getBas(){
-        return y+hauteur;
+
+    public int getBas() {
+        return y + hauteur;
     }
 }

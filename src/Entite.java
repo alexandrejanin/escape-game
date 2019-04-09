@@ -1,20 +1,20 @@
-public abstract class Entite{
+public abstract class Entite {
 
     protected Vecteur position;
-    
-    protected Entite(Vecteur position){
+
+    protected Entite(Vecteur position) {
         this.position = position;
     }
 
-    public Vecteur getPosition(){
+    public Vecteur getPosition() {
         return position;
     }
 
-    public int getX(){
+    public int getX() {
         return position.getX();
     }
 
-    public int getY(){
+    public int getY() {
         return position.getY();
     }
 }

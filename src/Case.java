@@ -1,3 +1,3 @@
-public enum Case{
-    Sol,Mur;
+public enum Case {
+    Sol, Mur
 }
