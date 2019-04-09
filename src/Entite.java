@@ -1,9 +1,11 @@
 public abstract class Entite{
 
     protected Vecteur position;
+    private final Character car;
     
-    protected Entite(Vecteur position){
+    protected Entite(Vecteur position, Character car){
         this.position = position;
+        this.car = car;
     }
 
     public Vecteur getPosition(){
@@ -11,10 +13,17 @@ public abstract class Entite{
     }
 
     public int getX(){
-        return position.getX();
+        return position.x;
     }
 
     public int getY(){
-        return position.getY();
+        return position.y;
     }
+
+    public Character getCar(){
+        return car;
+    }
+    
+    public abstract String getNom();
+
 }

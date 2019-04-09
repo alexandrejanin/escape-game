@@ -74,4 +74,8 @@ public class Labyrinthe{
     public Case getCase(int x, int y){
         return labyrinthe[y][x];
     }
+
+    public boolean getCaseLibre(int x, int y){
+        return labyrinthe[y][x] == Case.Sol;
+    }
 }

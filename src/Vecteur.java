@@ -1,7 +1,7 @@
 public class Vecteur{
 
-    private int x;
-    private int y;
+    public int x;
+    public int y;
 
     public Vecteur(int x, int y){
         this.x = x;
@@ -12,11 +12,7 @@ public class Vecteur{
         return "(" + x +"," + y + ")";
     }
 
-    public int getX(){
-        return x;
-    }
-
-    public int getY(){
-        return y;
+    public double distance(Vecteur vecteur){
+        return Math.sqrt((vecteur.x - x) * (vecteur.x - x) + (vecteur.y - y) * (vecteur.y - y));
     }
 }

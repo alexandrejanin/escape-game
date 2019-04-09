@@ -1,16 +1,16 @@
+import java.util.ArrayList;
 public final class Animal extends Entite{
     
     private final String nom;
-    private final Character car;
     private int appetit;
     private final int mobilite;
     private final int taille;
     private final String[] proies;
+    private static final int rayonObs = 6;
 
     private Animal(Vecteur position, String nom, Character car, int appetit, int mobilite, int taille, String[] proies){
-        super(position);
+        super(position, car);
         this.nom = nom;
-        this.car = car;
         this.appetit = appetit;
         this.mobilite = mobilite;
         this.taille = taille;
@@ -25,8 +25,13 @@ public final class Animal extends Entite{
         return taille;
     }
 
-    public Character getCar(){
-        return car;
+    private boolean peutManger(Entite entite){
+        for(String proie : proies){
+            if (proie.equals(entite.getNom())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Animal aleatoire(Vecteur position){
@@ -85,6 +90,71 @@ public final class Animal extends Entite{
             50,
             new String[]{"Herbes", "Carotte"}
         );
+    }
+
+    // Renvoie l'animal a manger
+    public Entite step(ArrayList<Entite> entites, Labyrinthe labyrinthe){
+        for(Entite entite : entites){
+            
+            double distance = position.distance(entite.position);
+            
+            if (distance > rayonObs){
+                continue;
+            }
+
+            Animal animal = entite instanceof Animal ? (Animal) entite : null;
+            
+            // Predateur a distance d'observation, on s'eloigne
+            if (animal.peutManger(this)){
+                if (entite.position.x < position.x && labyrinthe.getCaseLibre(position.x + 1, position.y)){
+                    position.x++;
+                }
+                else if (entite.position.x > position.x && labyrinthe.getCaseLibre(position.x - 1, position.y)){
+                    position.x--;
+                }
+                if (entite.position.y < position.y && labyrinthe.getCaseLibre(position.x, position.y + 1)){
+                    position.y++;
+                }
+                else if (entite.position.y > position.y && labyrinthe.getCaseLibre(position.x, position.y - 1)){
+                    position.y--;
+                }
+                return null;
+            }
+            else if (peutManger(entite)){
+                // Proie adjacente, on bouge sur sa position et on la mange
+                if(distance < 2){
+                    position.x = entite.position.x;
+                    position.y = entite.position.y;
+                    return entite;
+                }
+
+                // Proie a distance d'observation, on s'en rapproche
+                if (entite.position.x < position.x && labyrinthe.getCaseLibre(position.x - 1, position.y)){
+                    position.x--;
+                }
+                else if (entite.position.x > position.x && labyrinthe.getCaseLibre(position.x + 1, position.y)){
+                    position.x++;
+                }
+                if (entite.position.y < position.y && labyrinthe.getCaseLibre(position.x, position.y - 1)){
+                    position.y--;
+                }
+                else if (entite.position.y > position.y && labyrinthe.getCaseLibre(position.x, position.y + 1)){
+                    position.y++;
+                }
+                return null;
+            }
+        }
+
+        int prochainX, prochainY;
+        do {
+            prochainX = position.x + Random.getInt(-1, 1);
+            prochainY = position.y + Random.getInt(-1, 1);
+        } while(!labyrinthe.getCaseLibre(prochainX, prochainY));
+
+        position.x = prochainX;
+        position.y = prochainY;
+
+        return null;
     }
 
     public String toString(){

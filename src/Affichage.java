@@ -2,22 +2,22 @@ import java.util.ArrayList;
 
 public class Affichage{
 
-    public static String affichage(Labyrinthe labyrinthe, ArrayList<Animal> animaux){
+    public static String affichage(Labyrinthe labyrinthe, ArrayList<Entite> entites){
         String string = "";
         for(int y = 0; y < labyrinthe.getLongueur(); y++){
             for(int x =0 ; x < labyrinthe.getLargeur(); x++){
-                boolean animalPresent = false;
+                boolean entitePresente = false;
                 
-                for (Animal animal : animaux){
-                    if (animal.getX() == x && animal.getY() == y){
-                        string += animal.getCar();
-                        animalPresent = true;
+                for (Entite entite : entites){
+                    if (entite.getX() == x && entite.getY() == y){
+                        string += entite.getCar();
+                        entitePresente = true;
                         break;
                     }
                 }
 
                 // Si il n'y a pas d'animaux, on affiche le sol ou mur
-                if (!animalPresent){
+                if (!entitePresente){
                     switch (labyrinthe.getCase(x, y)){
                         case Mur:
                             string += "#";

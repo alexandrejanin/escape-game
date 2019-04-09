@@ -110,65 +110,65 @@ public class Leaf{
         Vecteur point2 = new Vecteur(Random.getInt(rectDroit.getGauche()+1,
         rectDroit.getDroite()-2),Random.getInt(rectDroit.getHaut()+1,rectDroit.getBas()-2));
 
-        int width = point2.getX()- point1.getX();
-        int height = point2.getY()- point1.getY();
+        int width = point2.x- point1.x;
+        int height = point2.y- point1.y;
 
         if(width<0){
             if(height<0){
                 if(Random.getBoolean(0.5)){
-                    couloir.add(new Rectangle(point2.getX(),point1.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point2.getX(),point2.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point2.x,point1.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point2.x,point2.y,1,Math.abs(height)));
                 }
                 else{
-                    couloir.add(new Rectangle(point2.getX(),point2.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point1.getX(),point2.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point2.x,point2.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point1.x,point2.y,1,Math.abs(height)));
                 }
             }
             else if(height >0){
                 if(Random.getBoolean(0.5)){
-                    couloir.add(new Rectangle(point2.getX(),point1.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point2.getX(),point1.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point2.x,point1.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point2.x,point1.y,1,Math.abs(height)));
                 }
                 else{
-                    couloir.add(new Rectangle(point2.getX(),point2.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point1.getX(),point1.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point2.x,point2.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point1.x,point1.y,1,Math.abs(height)));
                 }
             }
             else{
-                couloir.add(new Rectangle(point2.getX(),point2.getY(),Math.abs(width),1));
+                couloir.add(new Rectangle(point2.x,point2.y,Math.abs(width),1));
             }   
         }
         else if (width>0){
             if(height<0){
                 if (Random.getBoolean(0.5)){
-                    couloir.add(new Rectangle(point1.getX(),point2.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point1.getX(),point2.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point1.x,point2.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point1.x,point2.y,1,Math.abs(height)));
                 }
                 else{
-                    couloir.add(new Rectangle(point1.getX(),point1.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point2.getX(),point2.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point1.x,point1.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point2.x,point2.y,1,Math.abs(height)));
                 }
             }
             else if(height>0){
                 if(Random.getBoolean(0.5)){
-                    couloir.add(new Rectangle(point1.getX(),point1.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point2.getX(),point1.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point1.x,point1.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point2.x,point1.y,1,Math.abs(height)));
                 }
                 else{
-                    couloir.add(new Rectangle(point1.getX(),point2.getY(),Math.abs(width),1));
-                    couloir.add(new Rectangle(point1.getX(),point1.getY(),1,Math.abs(height)));
+                    couloir.add(new Rectangle(point1.x,point2.y,Math.abs(width),1));
+                    couloir.add(new Rectangle(point1.x,point1.y,1,Math.abs(height)));
                 }
             }
             else{
-                couloir.add(new Rectangle(point1.getX(),point1.getY(),Math.abs(width),1));
+                couloir.add(new Rectangle(point1.x,point1.y,Math.abs(width),1));
             }
         }
         else{
             if(height<0){
-                couloir.add(new Rectangle(point2.getX(),point2.getY(),1,Math.abs(height)));
+                couloir.add(new Rectangle(point2.x,point2.y,1,Math.abs(height)));
             }
             else if(height >0){
-                couloir.add(new Rectangle(point1.getX(),point1.getY(),1,Math.abs(height)));
+                couloir.add(new Rectangle(point1.x,point1.y,1,Math.abs(height)));
             }
         }      
     }
