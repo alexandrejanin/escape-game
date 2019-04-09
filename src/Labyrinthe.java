@@ -17,7 +17,7 @@ public class Labyrinthe{
             for(int i = 0;i<leafs.size();i++){
                 Leaf leaf = leafs.get(i);
                 if(leaf.nePossedePasEnfants()){
-                    if (leaf.getLargeur() > MAX_LEAF_SIZE || leaf.getHauteur()>  MAX_LEAF_SIZE || (Math.random()<0.25)){
+                    if (leaf.getLargeur() > MAX_LEAF_SIZE || leaf.getHauteur()>  MAX_LEAF_SIZE || Random.getBoolean(0.25)){
                         if (leaf.split()){
                             leafs.add(leaf.getGauche());
                             leafs.add(leaf.getDroite());
@@ -37,16 +37,29 @@ public class Labyrinthe{
 
         for(Leaf leaf : leafs){
             Rectangle salle = leaf.getSalle();
-            if(salle == null){
-                continue;
-            }
-            int xMax = salle.getX() + salle.getLargeur();
-            int yMax = salle.getY() + salle.getHauteur();
-            for(int x = salle.getX();x<xMax;x++){
-                for(int y = salle.getY();y<yMax;y++){
-                    labyrinthe[y][x] = Case.Sol;
+            if(salle != null){
+                int xMax = salle.getX() + salle.getLargeur();
+                int yMax = salle.getY() + salle.getHauteur();
+                for(int x = salle.getX();x<xMax;x++){
+                    for(int y = salle.getY();y<yMax;y++){
+                        labyrinthe[y][x] = Case.Sol;
+                    }
                 }
             }
+
+            ArrayList<Rectangle> couloirs = leaf.getCouloir();
+            if (couloirs != null){
+                for (Rectangle rect : couloirs){
+                    int xMax = rect.getX() + rect.getLargeur();
+                    int yMax = rect.getY() + rect.getHauteur();
+                    for(int x = rect.getX();x<xMax;x++){
+                        for(int y = rect.getY();y<yMax;y++){
+                            labyrinthe[y][x] = Case.Sol;
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -59,7 +72,7 @@ public class Labyrinthe{
                         string += "#";
                     break;
                     case Sol:
-                        string += ".";
+                        string += " ";
                     break;
                 }
             }

@@ -20,4 +20,16 @@ public class Rectangle{
     public int getHauteur(){
         return hauteur;
     }
+    public int getDroite(){
+        return x+largeur;
+    }
+    public int getGauche(){
+        return x;
+    }
+    public int getHaut(){
+        return y;
+    }
+    public int getBas(){
+        return y+hauteur;
+    }
 }
