@@ -1,6 +1,7 @@
 package Entites;
 
 import Labyrinthe.Labyrinthe;
+import Utilitaires.AStar;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
 
@@ -8,13 +9,16 @@ import java.util.ArrayList;
 
 public final class Animal extends Entite {
 
-    private static final int rayonObs = 6;
+    private static final int rayonObs = 8;
     private final String nom;
     private final Character car;
     private final int mobilite;
     private final int taille;
     private final String[] proies;
+
     private int appetit;
+
+    private ArrayList<Vecteur> chemin;
 
     private Animal(Vecteur position, String nom, Character car, int appetit, int mobilite, int taille, String[] proies) {
         super(position);
@@ -37,7 +41,7 @@ public final class Animal extends Entite {
             case 4:
                 return lapin(position);
         }
-        return null;
+        throw new ArrayIndexOutOfBoundsException();
     }
 
     public static Animal lion(Vecteur position) {
@@ -48,7 +52,7 @@ public final class Animal extends Entite {
                 150,
                 140,
                 200,
-                new String[]{"Gazelle", "Zebu"}
+                new String[]{"Gazelle", "Zebu", "Lapin"}
         );
     }
 
@@ -84,7 +88,7 @@ public final class Animal extends Entite {
                 40,
                 100,
                 50,
-                new String[]{"Herbes", "Carotte"}
+                new String[]{"Carotte"}
         );
     }
 
@@ -121,65 +125,43 @@ public final class Animal extends Entite {
                 continue;
             }
 
-            if (!(entite instanceof Animal)) {
-                continue;
-            }
-
-            Animal animal = (Animal) entite;
-
             // Predateur a distance d'observation, on s'eloigne
-            if (animal.peutManger(this)) {
-                if (animal.position.x < position.x && labyrinthe.getCaseLibre(position.x + 1, position.y)) {
+            if (entite instanceof Animal && ((Animal) entite).peutManger(this)) {
+                if (entite.position.x < position.x && labyrinthe.peutBouger(position.x + 1, position.y)) {
                     position.x++;
-                } else if (animal.position.x > position.x && labyrinthe.getCaseLibre(position.x - 1, position.y)) {
+                } else if (entite.position.x > position.x && labyrinthe.peutBouger(position.x - 1, position.y)) {
                     position.x--;
                 }
-                if (animal.position.y < position.y && labyrinthe.getCaseLibre(position.x, position.y + 1)) {
+                if (entite.position.y < position.y && labyrinthe.peutBouger(position.x, position.y + 1)) {
                     position.y++;
-                } else if (animal.position.y > position.y && labyrinthe.getCaseLibre(position.x, position.y - 1)) {
+                } else if (entite.position.y > position.y && labyrinthe.peutBouger(position.x, position.y - 1)) {
                     position.y--;
                 }
                 return null;
-            } else if (peutManger(animal)) {
+            } else if (peutManger(entite)) {
                 // Proie adjacente, on bouge sur sa position et on la mange
                 if (distance < 2) {
-                    position.x = animal.position.x;
-                    position.y = animal.position.y;
-                    return animal;
+                    position.x = entite.position.x;
+                    position.y = entite.position.y;
+                    return entite;
+                } else {
+                    chemin = AStar.getChemin(labyrinthe, this, entite.getPosition());
+                    break;
                 }
-
-                // Proie a distance d'observation, on s'en rapproche
-                if (animal.position.x < position.x && labyrinthe.getCaseLibre(position.x - 1, position.y)) {
-                    position.x--;
-                } else if (animal.position.x > position.x && labyrinthe.getCaseLibre(position.x + 1, position.y)) {
-                    position.x++;
-                }
-                if (animal.position.y < position.y && labyrinthe.getCaseLibre(position.x, position.y - 1)) {
-                    position.y--;
-                } else if (animal.position.y > position.y && labyrinthe.getCaseLibre(position.x, position.y + 1)) {
-                    position.y++;
-                }
-                return null;
             }
         }
 
-        int prochainX, prochainY;
-        do {
-            prochainX = position.x - 1 + Random.getInt(0, 2);
-            prochainY = position.y - 1 + Random.getInt(0, 2);
-        } while (!labyrinthe.getCaseLibre(prochainX, prochainY));
-
-        position.x = prochainX;
-        position.y = prochainY;
+        // Parcours le chemin actuel si il existe
+        if (chemin != null) {
+            position = chemin.get(0);
+            chemin.remove(0);
+            if (chemin.size() == 0) chemin = null;
+        }
 
         return null;
     }
 
     public String toString() {
-        String ret = "Type : " + nom + ", position : " + position + ", appetit :  " + appetit + ", mobilite : " + mobilite + ", taille : " + taille + ", peut manger : ";
-        for (String nom : proies) {
-            ret += nom + ", ";
-        }
-        return ret;
+        return nom + " " + position;
     }
 }

@@ -1,7 +1,8 @@
 package Utilitaires;
 
-public class Random {
+public final class Random {
 
+    // Renvoie un boolean avec `proba` chances d'etre true
     public static boolean getBoolean(double proba) {
         return Math.random() < proba;
     }

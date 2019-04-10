@@ -5,7 +5,7 @@ import Utilitaires.Vecteur;
 
 import java.util.Scanner;
 
-class Joueur {
+final class Joueur {
 
     private Animal animal;
 

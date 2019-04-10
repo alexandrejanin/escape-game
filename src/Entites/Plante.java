@@ -1,8 +1,9 @@
 package Entites;
 
+import Utilitaires.Random;
 import Utilitaires.Vecteur;
 
-public class Plante extends Entite {
+public final class Plante extends Entite {
 
     private final String nom;
     private final Character car;
@@ -13,6 +14,22 @@ public class Plante extends Entite {
         this.car = car;
     }
 
+    public static Plante aleatoire(Vecteur position) {
+        if (Random.getBoolean(.25)) {
+            return carotte(position);
+        } else {
+            return herbes(position);
+        }
+    }
+
+    private static Plante herbes(Vecteur position) {
+        return new Plante(position, "Herbes", ',');
+    }
+
+    private static Plante carotte(Vecteur position) {
+        return new Plante(position, "Carotte", '!');
+    }
+
     @Override
     public Character getCar() {
         return car;
@@ -20,13 +37,5 @@ public class Plante extends Entite {
 
     public String getNom() {
         return nom;
-    }
-
-    private static Plante herbes(Vecteur position) {
-        return new Plante(position, "Herbes", '|');
-    }
-
-    private static Plante carotte(Vecteur position) {
-        return new Plante(position, "Carotte", '!');
     }
 }

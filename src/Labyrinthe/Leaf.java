@@ -10,7 +10,7 @@ import Utilitaires.Vecteur;
 
 import java.util.ArrayList;
 
-class Leaf {
+final class Leaf {
 
     private int x, y, largeur, hauteur; // position et taille de Leaf
     private Leaf gauche, droite;

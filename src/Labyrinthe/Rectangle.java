@@ -1,6 +1,6 @@
 package Labyrinthe;
 
-class Rectangle {
+final class Rectangle {
     private int x, y, largeur, hauteur;
 
     Rectangle(int x, int y, int largeur, int hauteur) {
