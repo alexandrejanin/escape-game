@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public final class Animal extends Entite {
 
-    private static final int rayonObs = 6;
+    public static final int RAYON_VISION = 7;
     private final String nom;
     private final Character car;
     private final int taille;
@@ -116,7 +116,7 @@ public final class Animal extends Entite {
             double distance = position.distance(entite.position);
 
             // Entite trop loin, on passe
-            if (distance > rayonObs) {
+            if (distance > RAYON_VISION) {
                 continue;
             }
 

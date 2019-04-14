@@ -17,7 +17,7 @@ public final class Rocher extends Obstacle {
 
     @Override
     public Character getCar() {
-        return '&';
+        return '♣';
     }
 
     @Override

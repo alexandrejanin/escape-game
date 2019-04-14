@@ -5,11 +5,12 @@ https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-
 
 package Labyrinthe;
 
+import Application.Joueur;
 import Entites.Animal;
 import Entites.Entite;
 import Entites.Obstacle;
 import Entites.Plante;
-import Entites.PositionNullException;
+import Utilitaires.EssaisDepassesException;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
 
@@ -20,18 +21,18 @@ import java.util.List;
 import java.util.Map;
 
 public final class Labyrinthe {
-
     // Parametres de génération de labyrinthe
     private final static int MAX_LEAF_SIZE = 20;
     private final static int MIN_LEAF_SIZE = 5;
-
     private final ArrayList<Entite> entites;
     private final Case[][] labyrinthe;
     private final int hauteur;
     private final int largeur;
+    private final Vecteur sortie;
 
-    public Labyrinthe(int largeur, int hauteur, int nbAnimaux, int nbPlantes, double probaObstacle) {
+    public Labyrinthe(int largeur, int hauteur, int nbAnimaux, int nbPlantes, double probaObstacle, Joueur joueur) {
         entites = new ArrayList<>();
+
         labyrinthe = new Case[hauteur][largeur];
         this.hauteur = hauteur;
         this.largeur = largeur;
@@ -89,6 +90,7 @@ public final class Labyrinthe {
                             labyrinthe[y][x] = Case.Sol;
                         }
                     }
+
                     // Chance de placer un obstalce
                     if (Random.getBoolean(probaObstacle)) {
                         Vecteur position = new Vecteur(
@@ -123,6 +125,35 @@ public final class Labyrinthe {
 
             entites.add(Animal.aleatoire(new Vecteur(x, y)));
         }
+
+        // Ajoute l'animal du joueur au labyrinthe
+        Animal animalJoueur = joueur.getAnimal();
+
+        int essaisJoueur = 0;
+        Vecteur positionJoueur;
+        do {
+            positionJoueur = new Vecteur(Random.getInt(0, largeur), Random.getInt(0, hauteur));
+            essaisJoueur++;
+            if (essaisJoueur > 1000) {
+                throw new EssaisDepassesException("Essais de placement du joueur dépassés");
+            }
+        } while (!peutBouger(positionJoueur, animalJoueur));
+
+        animalJoueur.setPosition(positionJoueur);
+        entites.add(animalJoueur);
+
+
+        // Ajoute la sortie au labyrinthe
+        int essaisSortie = 0;
+        Vecteur positionSortie;
+        do {
+            positionSortie = new Vecteur(Random.getInt(0, largeur), Random.getInt(0, hauteur));
+            essaisSortie++;
+            if (essaisSortie > 1000) {
+                throw new EssaisDepassesException("Essais de placement de la sortie dépassés");
+            }
+        } while (!peutBouger(positionSortie, animalJoueur) || positionJoueur.distance(positionSortie) < Math.min(largeur, hauteur) / 2);
+        sortie = positionSortie;
     }
 
     public List<Entite> getEntites() {
@@ -161,12 +192,25 @@ public final class Labyrinthe {
     }
 
     // Step toutes les entites
-    public void step() {
+    // Renvoie true si la partie est finie
+    public boolean step(Joueur joueur) {
+        if (joueur.getAnimal().getPosition().equals(sortie)) {
+            System.out.println("Félicitations! Tu as gagné!");
+            return true;
+        }
+        if (!entites.contains(joueur.getAnimal())) {
+            System.out.println("Tu es mort!");
+            return true;
+        }
+
         HashMap<Animal, Vecteur> prochainePosition = new HashMap<>();
+
+        // On demande au joueur de deplacer son animal
+        prochainePosition.put(joueur.getAnimal(), joueur.joueTour(this));
 
         for (Entite entite : entites) {
             // Si l'entite est un animal, il joue un tour et renvoie sa prochaine position
-            if (entite instanceof Animal) {
+            if (entite instanceof Animal && entite != joueur.getAnimal()) {
                 Animal animal = (Animal) entite;
                 prochainePosition.put(animal, animal.step(this));
             }
@@ -179,16 +223,16 @@ public final class Labyrinthe {
 
         // Puis on fait bouger toutes les entites
         for (Map.Entry<Animal, Vecteur> entry : prochainePosition.entrySet()) {
-            try {
+            if (peutBouger(entry.getValue(), entry.getKey())) {
                 entry.getKey().setPosition(entry.getValue());
-            } catch (PositionNullException e) {
-                e.printStackTrace();
             }
         }
+
+        return false;
     }
 
     // Affiche le labyrinthe sous forme de caractères
-    public String affichage() {
+    public String affichage(Joueur joueur) {
         Character[][] characters = new Character[hauteur][largeur];
 
         // Affiche labyrinthe
@@ -226,15 +270,32 @@ public final class Labyrinthe {
             }
         }
 
+        // Affiche l'animal du joueur
+        characters[joueur.getAnimal().getY()][joueur.getAnimal().getX()] = 'J';
+
+        // Affiche la sortie
+        characters[sortie.y][sortie.x] = '♦';
+
         // Tableau -> string
         StringBuilder string = new StringBuilder();
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                string.append(characters[y][x]);
+        for (int y = -Animal.RAYON_VISION; y <= Animal.RAYON_VISION; y++) {
+            for (int x = -Animal.RAYON_VISION; x <= Animal.RAYON_VISION; x++) {
+                int labX = joueur.getAnimal().getX() + x;
+                int labY = joueur.getAnimal().getY() + y;
+
+                if (labX < 0 || labX >= largeur || labY < 0 || labY >= hauteur) {
+                    string.append("-");
+                } else {
+                    string.append(characters[labY][labX]);
+                }
             }
-            string.append("\n");
+            string.append('\n');
         }
 
         return string.toString();
+    }
+
+    private enum Case {
+        Sol, Mur
     }
 }
