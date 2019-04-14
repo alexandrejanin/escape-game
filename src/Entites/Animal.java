@@ -102,11 +102,15 @@ public final class Animal extends Entite {
         return nom;
     }
 
-    int getTaille() {
+    public int getTaille() {
         return taille;
     }
 
-    private boolean peutManger(Entite entite) {
+    public ArrayList<Vecteur> getChemin() {
+        return chemin;
+    }
+
+    public boolean peutManger(Entite entite) {
         for (String proie : proies) {
             if (proie.equals(entite.getNom())) {
                 return true;
@@ -127,14 +131,14 @@ public final class Animal extends Entite {
 
             // Predateur a distance d'observation, on s'eloigne
             if (entite instanceof Animal && ((Animal) entite).peutManger(this)) {
-                if (entite.position.x < position.x && labyrinthe.peutBouger(position.x + 1, position.y)) {
+                if (entite.position.x < position.x && labyrinthe.peutBouger(position.x + 1, position.y, this)) {
                     position.x++;
-                } else if (entite.position.x > position.x && labyrinthe.peutBouger(position.x - 1, position.y)) {
+                } else if (entite.position.x > position.x && labyrinthe.peutBouger(position.x - 1, position.y, this)) {
                     position.x--;
                 }
-                if (entite.position.y < position.y && labyrinthe.peutBouger(position.x, position.y + 1)) {
+                if (entite.position.y < position.y && labyrinthe.peutBouger(position.x, position.y + 1, this)) {
                     position.y++;
-                } else if (entite.position.y > position.y && labyrinthe.peutBouger(position.x, position.y - 1)) {
+                } else if (entite.position.y > position.y && labyrinthe.peutBouger(position.x, position.y - 1, this)) {
                     position.y--;
                 }
                 return null;
@@ -151,13 +155,22 @@ public final class Animal extends Entite {
             }
         }
 
-        // Parcours le chemin actuel si il existe
-        if (chemin != null) {
-            position = chemin.get(0);
-            chemin.remove(0);
-            if (chemin.size() == 0) chemin = null;
+        int essais = 0;
+        // Si l'animal n'a rien a faire, il bouge au hasard dans un cercle de rayonObs
+        if (chemin == null || chemin.isEmpty()) {
+            do {
+                essais++;
+                Vecteur but = Random.getPointDansCercle(position, rayonObs);
+
+                chemin = AStar.getChemin(labyrinthe, this, but);
+            } while (essais < 100 && chemin == null);
         }
 
+        // Avance d'une case dans le chemin
+        if (chemin != null && !chemin.isEmpty()) {
+            position = chemin.get(0);
+            chemin.remove(0);
+        }
         return null;
     }
 

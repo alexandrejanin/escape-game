@@ -28,11 +28,14 @@ public final class Vecteur {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Vecteur)) return false;
+        if (o == this) return true;
+
+        if (o == null) return false;
+
+        if (o.getClass() != getClass()) return false;
+
         Vecteur vecteur = (Vecteur) o;
-        return x == vecteur.x &&
-                y == vecteur.y;
+        return x == vecteur.x && y == vecteur.y;
     }
 
     @Override

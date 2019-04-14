@@ -9,6 +9,9 @@ import java.util.HashSet;
 
 public class AStar {
     public static ArrayList<Vecteur> getChemin(Labyrinthe labyrinthe, Animal animal, Vecteur but) {
+        // Si l'animal ne peut pas marcher sur la case, pas besoin de chercher un chemin
+        if (!labyrinthe.peutBouger(but, animal)) return null;
+
         HashSet<Vecteur> fermé = new HashSet<>();
         HashSet<Vecteur> ouvert = new HashSet<>();
         HashMap<Vecteur, Vecteur> precedent = new HashMap<>();
@@ -30,7 +33,7 @@ public class AStar {
             ouvert.remove(pos);
             fermé.add(pos);
 
-            for (Vecteur voisin : voisins(pos, labyrinthe)) {
+            for (Vecteur voisin : voisins(pos, labyrinthe, animal)) {
                 if (fermé.contains(voisin)) continue;
 
                 int g = gScore.get(pos) + 1;
@@ -56,7 +59,7 @@ public class AStar {
         return Math.abs(a.x - b.x) * Math.abs(a.x - b.x) + Math.abs(a.y - b.y) * Math.abs(a.y - b.y);
     }
 
-    private static ArrayList<Vecteur> voisins(Vecteur pos, Labyrinthe labyrinthe) {
+    private static ArrayList<Vecteur> voisins(Vecteur pos, Labyrinthe labyrinthe, Animal animal) {
         ArrayList<Vecteur> voisins = new ArrayList<>();
 
         for (int x = -1; x <= 1; x++) {
@@ -65,7 +68,7 @@ public class AStar {
 
                 Vecteur voisin = new Vecteur(pos.x + x, pos.y + y);
 
-                if (!labyrinthe.peutBouger(voisin.x, voisin.y)) continue;
+                if (!labyrinthe.peutBouger(voisin, animal)) continue;
 
                 voisins.add(voisin);
             }

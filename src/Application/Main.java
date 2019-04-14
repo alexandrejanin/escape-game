@@ -9,7 +9,7 @@ public final class Main {
     public static void main(String[] args) throws IOException {
         //Joueur joueur = new Joueur();
 
-        Labyrinthe labyrinthe = new Labyrinthe(30, 30, 10, 10, 0.1);
+        Labyrinthe labyrinthe = new Labyrinthe(40, 40, 25, 25, 0.1);
 
         while (true) {
             System.out.println(labyrinthe.affichage());

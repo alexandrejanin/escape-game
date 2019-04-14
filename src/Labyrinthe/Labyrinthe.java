@@ -13,9 +13,6 @@ import Utilitaires.Vecteur;
 
 import java.util.ArrayList;
 
-import static Labyrinthe.Case.Mur;
-import static Labyrinthe.Case.Sol;
-
 public final class Labyrinthe {
 
     // Parametres de génération de labyrinthe
@@ -24,6 +21,7 @@ public final class Labyrinthe {
 
     private final ArrayList<Entite> entites;
     private final Case[][] labyrinthe;
+    StringBuilder string = new StringBuilder();
 
     public Labyrinthe(int largeur, int hauteur, int nbAnimaux, int nbPlantes, double probaObstacle) {
         entites = new ArrayList<>();
@@ -56,7 +54,7 @@ public final class Labyrinthe {
         // Initialise la grille
         for (int x = 0; x < largeur; x++) {
             for (int y = 0; y < hauteur; y++) {
-                labyrinthe[y][x] = Mur;
+                labyrinthe[y][x] = Case.Mur;
             }
         }
 
@@ -68,7 +66,7 @@ public final class Labyrinthe {
                 int yMax = salle.getY() + salle.getHauteur();
                 for (int x = salle.getX(); x < xMax; x++) {
                     for (int y = salle.getY(); y < yMax; y++) {
-                        labyrinthe[y][x] = Sol;
+                        labyrinthe[y][x] = Case.Sol;
                     }
                 }
             }
@@ -80,7 +78,7 @@ public final class Labyrinthe {
                     int yMax = rect.getY() + rect.getHauteur();
                     for (int x = rect.getX(); x < xMax; x++) {
                         for (int y = rect.getY(); y < yMax; y++) {
-                            labyrinthe[y][x] = Sol;
+                            labyrinthe[y][x] = Case.Sol;
                         }
                     }
                 }
@@ -94,7 +92,7 @@ public final class Labyrinthe {
             do {
                 x = Random.getInt(0, largeur - 1);
                 y = Random.getInt(0, hauteur - 1);
-            } while (getCase(x, y) == Mur);
+            } while (getCase(x, y) == Case.Mur);
 
             entites.add(Plante.aleatoire(new Vecteur(x, y)));
         }
@@ -105,7 +103,7 @@ public final class Labyrinthe {
             do {
                 x = Random.getInt(0, largeur - 1);
                 y = Random.getInt(0, hauteur - 1);
-            } while (getCase(x, y) == Mur);
+            } while (getCase(x, y) == Case.Mur);
 
             entites.add(Animal.aleatoire(new Vecteur(x, y)));
         }
@@ -123,8 +121,22 @@ public final class Labyrinthe {
         return labyrinthe[y][x];
     }
 
-    public boolean peutBouger(int x, int y) {
-        return labyrinthe[y][x] != Mur;
+    public boolean peutBouger(Vecteur vecteur, Animal animal) {
+        return peutBouger(vecteur.x, vecteur.y, animal);
+    }
+
+    public boolean peutBouger(int x, int y, Animal animal) {
+
+        if (x < 0 || x >= getLargeur() || y < 0 || y >= getHauteur()) return false;
+        if (labyrinthe[y][x] == Case.Mur) return false;
+
+        for (Entite entite : entites) {
+            if (entite instanceof Animal && entite != animal && entite.getX() == x && entite.getY() == y) {
+                return animal.peutManger(entite);
+            }
+        }
+
+        return true;
     }
 
     // Step toutes les entitees
@@ -144,33 +156,45 @@ public final class Labyrinthe {
     }
 
     public String affichage() {
+        Character[][] characters = new Character[getHauteur()][getLargeur()];
+
+        // Affiche labyrinthe
+        for (int y = 0; y < getHauteur(); y++) {
+            for (int x = 0; x < getLargeur(); x++) {
+                switch (getCase(x, y)) {
+                    case Mur:
+                        characters[y][x] = '#';
+                        break;
+                    case Sol:
+                        characters[y][x] = ' ';
+                        break;
+                }
+            }
+        }
+
+        // Affiche plantes
+        for (Entite entite : entites) {
+            if (entite instanceof Plante) {
+                characters[entite.getY()][entite.getX()] = entite.getCar();
+            }
+        }
+
+        // Affiche animaux
+        for (Entite entite : entites) {
+            if (entite instanceof Animal) {
+                characters[entite.getY()][entite.getX()] = entite.getCar();
+            }
+        }
+
+        // Tableau -> string
         StringBuilder string = new StringBuilder();
         for (int y = 0; y < getHauteur(); y++) {
             for (int x = 0; x < getLargeur(); x++) {
-                boolean entitePresente = false;
-
-                for (Entite entite : entites) {
-                    if (entite.getX() == x && entite.getY() == y) {
-                        string.append(entite.getCar());
-                        entitePresente = true;
-                        break;
-                    }
-                }
-
-                // Si il n'y a pas d'animaux, on affiche le sol ou mur
-                if (!entitePresente) {
-                    switch (getCase(x, y)) {
-                        case Mur:
-                            string.append("#");
-                            break;
-                        case Sol:
-                            string.append(" ");
-                            break;
-                    }
-                }
+                string.append(characters[y][x]);
             }
             string.append("\n");
         }
+
         return string.toString();
     }
 }
