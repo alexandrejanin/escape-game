@@ -15,7 +15,7 @@ public final class Plante extends Entite {
     }
 
     public static Plante aleatoire(Vecteur position) {
-        if (Random.getBoolean(.25)) {
+        if (Random.getBoolean(.3)) {
             return carotte(position);
         } else {
             return herbes(position);

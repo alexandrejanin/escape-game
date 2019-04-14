@@ -1,5 +1,5 @@
 /*
-D'apres 'How to Use BSP Trees to Generate Game Maps'
+Génération du labyrinthe d'apres 'How to Use BSP Trees to Generate Game Maps'
 https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268
  */
 
@@ -7,30 +7,38 @@ package Labyrinthe;
 
 import Entites.Animal;
 import Entites.Entite;
+import Entites.Obstacle;
 import Entites.Plante;
+import Entites.PositionNullException;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Labyrinthe {
 
     // Parametres de génération de labyrinthe
-    private final static int MAX_LEAF_SIZE = 16;
-    private final static int MIN_LEAF_SIZE = 6;
+    private final static int MAX_LEAF_SIZE = 20;
+    private final static int MIN_LEAF_SIZE = 5;
 
     private final ArrayList<Entite> entites;
     private final Case[][] labyrinthe;
-    StringBuilder string = new StringBuilder();
+    private final int hauteur;
+    private final int largeur;
 
     public Labyrinthe(int largeur, int hauteur, int nbAnimaux, int nbPlantes, double probaObstacle) {
         entites = new ArrayList<>();
         labyrinthe = new Case[hauteur][largeur];
+        this.hauteur = hauteur;
+        this.largeur = largeur;
 
         // Crée le labyrinthe
         ArrayList<Leaf> leafs = new ArrayList<>();
         Leaf racine = new Leaf(0, 0, largeur, hauteur);
-
         leafs.add(racine);
 
         boolean aSplit = true;
@@ -81,6 +89,14 @@ public final class Labyrinthe {
                             labyrinthe[y][x] = Case.Sol;
                         }
                     }
+                    // Chance de placer un obstalce
+                    if (Random.getBoolean(probaObstacle)) {
+                        Vecteur position = new Vecteur(
+                                Random.getInt(rect.getX(), xMax),
+                                Random.getInt(rect.getY(), yMax)
+                        );
+                        entites.add(Obstacle.aleatoire(position));
+                    }
                 }
             }
 
@@ -109,58 +125,75 @@ public final class Labyrinthe {
         }
     }
 
-    public int getLargeur() {
-        return labyrinthe[0].length;
-    }
-
-    public int getHauteur() {
-        return labyrinthe.length;
+    public List<Entite> getEntites() {
+        return Collections.unmodifiableList(entites);
     }
 
     public Case getCase(int x, int y) {
         return labyrinthe[y][x];
     }
 
-    public boolean peutBouger(Vecteur vecteur, Animal animal) {
-        return peutBouger(vecteur.x, vecteur.y, animal);
+    public boolean peutBouger(Vecteur position, Animal animal) {
+        return peutBouger(position.x, position.y, animal);
     }
 
     public boolean peutBouger(int x, int y, Animal animal) {
+        // Sors du labyrinthe? -> false
+        if (x < 0 || x >= largeur || y < 0 || y >= hauteur) return false;
 
-        if (x < 0 || x >= getLargeur() || y < 0 || y >= getHauteur()) return false;
+        // Est un mur? -> false
         if (labyrinthe[y][x] == Case.Mur) return false;
 
         for (Entite entite : entites) {
-            if (entite instanceof Animal && entite != animal && entite.getX() == x && entite.getY() == y) {
-                return animal.peutManger(entite);
+            if (entite.getX() == x && entite.getY() == y) {
+                // Un autre animal qui ne peut pas etre mangé occupe la case -> false
+                if (entite instanceof Animal && entite != animal && !animal.peutManger(entite)) {
+                    return false;
+                }
+                // Un obstacle qui ne peut pas etre franchi -> false
+                if (entite instanceof Obstacle && !((Obstacle) entite).peutPasser(animal)) {
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-    // Step toutes les entitees
+    // Step toutes les entites
     public void step() {
-        ArrayList<Entite> entitesAManger = new ArrayList<>();
+        HashMap<Animal, Vecteur> prochainePosition = new HashMap<>();
 
         for (Entite entite : entites) {
+            // Si l'entite est un animal, il joue un tour et renvoie sa prochaine position
             if (entite instanceof Animal) {
-                Entite proie = ((Animal) entite).step(entites, this);
-                if (proie != null) entitesAManger.add(proie);
+                Animal animal = (Animal) entite;
+                prochainePosition.put(animal, animal.step(this));
             }
         }
 
-        for (Entite entite : entitesAManger) {
-            entites.remove(entite);
+        // On supprime d'abord toutes les entites qui se font manger
+        for (Map.Entry<Animal, Vecteur> entry : prochainePosition.entrySet()) {
+            entites.removeIf(entite -> entite.getPosition().equals(entry.getValue()) && entry.getKey().peutManger(entite));
+        }
+
+        // Puis on fait bouger toutes les entites
+        for (Map.Entry<Animal, Vecteur> entry : prochainePosition.entrySet()) {
+            try {
+                entry.getKey().setPosition(entry.getValue());
+            } catch (PositionNullException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // Affiche le labyrinthe sous forme de caractères
     public String affichage() {
-        Character[][] characters = new Character[getHauteur()][getLargeur()];
+        Character[][] characters = new Character[hauteur][largeur];
 
         // Affiche labyrinthe
-        for (int y = 0; y < getHauteur(); y++) {
-            for (int x = 0; x < getLargeur(); x++) {
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
                 switch (getCase(x, y)) {
                     case Mur:
                         characters[y][x] = '#';
@@ -172,14 +205,21 @@ public final class Labyrinthe {
             }
         }
 
-        // Affiche plantes
+        // puis plantes
         for (Entite entite : entites) {
             if (entite instanceof Plante) {
                 characters[entite.getY()][entite.getX()] = entite.getCar();
             }
         }
 
-        // Affiche animaux
+        // puis obstacles
+        for (Entite entite : entites) {
+            if (entite instanceof Obstacle) {
+                characters[entite.getY()][entite.getX()] = entite.getCar();
+            }
+        }
+
+        // puis animaux
         for (Entite entite : entites) {
             if (entite instanceof Animal) {
                 characters[entite.getY()][entite.getX()] = entite.getCar();
@@ -188,8 +228,8 @@ public final class Labyrinthe {
 
         // Tableau -> string
         StringBuilder string = new StringBuilder();
-        for (int y = 0; y < getHauteur(); y++) {
-            for (int x = 0; x < getLargeur(); x++) {
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
                 string.append(characters[y][x]);
             }
             string.append("\n");

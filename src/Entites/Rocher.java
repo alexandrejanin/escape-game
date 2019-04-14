@@ -7,12 +7,8 @@ public final class Rocher extends Obstacle {
     private int tailleMin;
 
     public Rocher(Vecteur position) {
-        this(position, 120);
-    }
-
-    public Rocher(Vecteur position, int tailleMin) {
         super(position);
-        this.tailleMin = tailleMin;
+        tailleMin = 120;
     }
 
     public boolean peutPasser(Animal animal) {
@@ -21,7 +17,7 @@ public final class Rocher extends Obstacle {
 
     @Override
     public Character getCar() {
-        return '*';
+        return '&';
     }
 
     @Override

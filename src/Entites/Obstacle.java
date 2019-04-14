@@ -3,20 +3,19 @@ package Entites;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
 
-abstract class Obstacle extends Entite {
+public abstract class Obstacle extends Entite {
 
     Obstacle(Vecteur position) {
         super(position);
     }
 
+    // Renvoie un obstacle aléatoire
     public static Obstacle aleatoire(Vecteur position) {
-        switch (Random.getInt(1, 2)) {
-            case 1:
-                return new Trou(position);
-            case 2:
-                return new Rocher(position);
+        if (Random.getBoolean(.5)) {
+            return new Trou(position);
+        } else {
+            return new Rocher(position);
         }
-        throw new ArrayIndexOutOfBoundsException();
     }
 
     public abstract boolean peutPasser(Animal animal);

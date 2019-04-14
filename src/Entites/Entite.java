@@ -14,6 +14,11 @@ public abstract class Entite {
         return position;
     }
 
+    public void setPosition(Vecteur position) throws PositionNullException {
+        if (position == null) throw new PositionNullException(this);
+        this.position = position;
+    }
+
     public int getX() {
         return position.x;
     }

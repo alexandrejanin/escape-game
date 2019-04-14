@@ -6,16 +6,20 @@ import java.io.IOException;
 
 public final class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         //Joueur joueur = new Joueur();
 
-        Labyrinthe labyrinthe = new Labyrinthe(40, 40, 25, 25, 0.1);
+        Labyrinthe labyrinthe = new Labyrinthe(40, 40, 25, 50, .1);
 
         while (true) {
             System.out.println(labyrinthe.affichage());
 
             // Attend d'appuyer sur entrée pour continuer
-            System.in.read();
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             labyrinthe.step();
         }
