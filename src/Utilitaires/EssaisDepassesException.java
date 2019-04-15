@@ -1,6 +1,6 @@
 package Utilitaires;
 
-public class EssaisDepassesException extends RuntimeException {
+public final class EssaisDepassesException extends RuntimeException {
     private final String message;
 
     public EssaisDepassesException(String message) {

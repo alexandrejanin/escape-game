@@ -1,8 +1,8 @@
 package Application;
 
 import Entites.Animal;
-import Entites.Obstacle;
 import Entites.Comestible;
+import Entites.Obstacle;
 import Labyrinthe.Labyrinthe;
 
 public final class Main {

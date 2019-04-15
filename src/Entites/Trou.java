@@ -4,7 +4,7 @@ import Utilitaires.Vecteur;
 
 public final class Trou extends Obstacle {
 
-    private int tailleMax;
+    private final int tailleMax;
 
     public Trou(Vecteur position) {
         super(position);

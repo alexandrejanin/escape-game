@@ -12,7 +12,11 @@ import java.util.ArrayList;
 
 final class Leaf {
 
-    private int x, y, largeur, hauteur; // position et taille de Leaf
+    private final int x;
+    private final int y;
+    private final int largeur;
+    private final int hauteur;
+
     private Leaf gauche, droite;
     private Rectangle salle;
     private ArrayList<Rectangle> couloir;

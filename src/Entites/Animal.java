@@ -15,13 +15,10 @@ public final class Animal extends Entite implements IJoueTour {
     private final int taille;
     private final String[] proies;
 
-    private int appetit;
-
-    private Animal(Vecteur position, String nom, Character car, int appetit, int taille, String[] proies) {
+    private Animal(Vecteur position, String nom, Character car, int taille, String[] proies) {
         super(position);
         this.nom = nom;
         this.car = car;
-        this.appetit = appetit;
         this.taille = taille;
         this.proies = proies;
     }
@@ -46,7 +43,6 @@ public final class Animal extends Entite implements IJoueTour {
                 position,
                 "Lion",
                 'L',
-                150,
                 200,
                 new String[]{"Gazelle", "Zebu", "Lapin"}
         );
@@ -57,7 +53,6 @@ public final class Animal extends Entite implements IJoueTour {
                 position,
                 "Gazelle",
                 'G',
-                80,
                 120,
                 new String[]{"Herbes"}
         );
@@ -68,7 +63,6 @@ public final class Animal extends Entite implements IJoueTour {
                 position,
                 "Zebu",
                 'Z',
-                110,
                 300,
                 new String[]{"Herbes"}
         );
@@ -79,7 +73,6 @@ public final class Animal extends Entite implements IJoueTour {
                 position,
                 "Suricate",
                 'S',
-                40,
                 50,
                 new String[]{"Insectes"}
         );

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class AStar {
+public final class AStar {
     public static ArrayList<Vecteur> getChemin(Labyrinthe labyrinthe, Animal animal, Vecteur but) {
         // Si l'animal ne peut pas marcher sur la case, pas besoin de chercher un chemin
         if (!labyrinthe.peutBouger(but, animal)) return null;

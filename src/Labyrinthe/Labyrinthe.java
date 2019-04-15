@@ -7,10 +7,10 @@ package Labyrinthe;
 
 import Application.Joueur;
 import Entites.Animal;
+import Entites.Comestible;
 import Entites.Entite;
 import Entites.IJoueTour;
 import Entites.Obstacle;
-import Entites.Comestible;
 import Utilitaires.EssaisDepassesException;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
@@ -107,40 +107,18 @@ public final class Labyrinthe {
 
         // Ajoute plantes
         for (int i = 0; i < nbPlantes; i++) {
-            int x, y;
-            do {
-                x = Random.getInt(0, largeur - 1);
-                y = Random.getInt(0, hauteur - 1);
-            } while (getCase(x, y) == Case.Mur);
-
-            entites.add(Comestible.aleatoire(new Vecteur(x, y)));
+            entites.add(Comestible.aleatoire(getRandomCaseLibre()));
         }
 
         // Ajoute animaux
         for (int i = 0; i < nbAnimaux; i++) {
-            int x, y;
-            do {
-                x = Random.getInt(0, largeur - 1);
-                y = Random.getInt(0, hauteur - 1);
-            } while (getCase(x, y) == Case.Mur);
-
-            entites.add(Animal.aleatoire(new Vecteur(x, y)));
+            entites.add(Animal.aleatoire(getRandomCaseLibre()));
         }
 
         // Ajoute l'animal du joueur au labyrinthe
         Animal animalJoueur = joueur.getAnimal();
 
-        int essaisJoueur = 0;
-        Vecteur positionJoueur;
-        do {
-            positionJoueur = new Vecteur(Random.getInt(0, largeur), Random.getInt(0, hauteur));
-            essaisJoueur++;
-            if (essaisJoueur > 1000) {
-                throw new EssaisDepassesException("Essais de placement du joueur dépassés");
-            }
-        } while (!peutBouger(positionJoueur, animalJoueur));
-
-        animalJoueur.setPosition(positionJoueur);
+        animalJoueur.setPosition(getRandomCaseLibre());
         entites.add(animalJoueur);
 
 
@@ -153,7 +131,7 @@ public final class Labyrinthe {
             if (essaisSortie > 1000) {
                 throw new EssaisDepassesException("Essais de placement de la sortie dépassés");
             }
-        } while (!peutBouger(positionSortie, animalJoueur) || positionJoueur.distance(positionSortie) < Math.min(largeur, hauteur) / 2);
+        } while (!peutBouger(positionSortie, animalJoueur) || animalJoueur.getPosition().distance(positionSortie) < Math.min(largeur, hauteur) / 2);
         sortie = positionSortie;
     }
 
@@ -161,14 +139,29 @@ public final class Labyrinthe {
         return Collections.unmodifiableList(entites);
     }
 
-    public Case getCase(int x, int y) {
+    private Case getCase(int x, int y) {
         return labyrinthe[y][x];
+    }
+
+    private Vecteur getRandomCaseLibre() {
+        int x, y;
+        int essais = 0;
+        do {
+            x = Random.getInt(0, largeur - 1);
+            y = Random.getInt(0, hauteur - 1);
+            essais++;
+            if (essais > 1000) {
+                throw new EssaisDepassesException("Essais de placement de l'entite dépassés");
+            }
+        } while (!peutBouger(x, y, null));
+        return new Vecteur(x, y);
     }
 
     public boolean peutBouger(Vecteur position, Animal animal) {
         return peutBouger(position.x, position.y, animal);
     }
 
+    // Return true si animal peut bouger sur la case (vide ou proie). Si animal est null, tout animal sur la case bloque le déplacement.
     public boolean peutBouger(int x, int y, Animal animal) {
         // Sors du labyrinthe? -> false
         if (x < 0 || x >= largeur || y < 0 || y >= hauteur) return false;
@@ -179,7 +172,7 @@ public final class Labyrinthe {
         for (Entite entite : entites) {
             if (entite.getX() == x && entite.getY() == y) {
                 // Un autre animal qui ne peut pas etre mangé occupe la case -> false
-                if (entite instanceof Animal && entite != animal && !animal.peutManger(entite)) {
+                if (entite instanceof Animal && entite != animal && (animal == null || !animal.peutManger(entite))) {
                     return false;
                 }
                 // Un obstacle qui ne peut pas etre franchi -> false

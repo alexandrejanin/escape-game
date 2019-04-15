@@ -4,7 +4,7 @@ import Utilitaires.Vecteur;
 
 public final class Rocher extends Obstacle {
 
-    private int tailleMin;
+    private final int tailleMin;
 
     public Rocher(Vecteur position) {
         super(position);
