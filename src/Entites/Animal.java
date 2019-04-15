@@ -7,7 +7,7 @@ import Utilitaires.Vecteur;
 
 import java.util.ArrayList;
 
-public final class Animal extends Entite {
+public final class Animal extends Entite implements IJoueTour {
 
     public static final int RAYON_VISION = 7;
     private final String nom;
@@ -126,6 +126,7 @@ public final class Animal extends Entite {
     }
 
     // Renvoie l'animal a manger
+    @Override
     public Vecteur joueTour(Labyrinthe labyrinthe) {
         Entite proiePlusProche = null;
         for (Entite entite : labyrinthe.getEntites()) {
@@ -184,6 +185,13 @@ public final class Animal extends Entite {
         } while (essais < 20);
 
         return position;
+    }
+
+    @Override
+    public void bouge(Labyrinthe labyrinthe, Vecteur position) {
+        if (labyrinthe.peutBouger(position, this)) {
+            setPosition(position);
+        }
     }
 
     public String toString() {

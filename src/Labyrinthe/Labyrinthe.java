@@ -8,6 +8,7 @@ package Labyrinthe;
 import Application.Joueur;
 import Entites.Animal;
 import Entites.Entite;
+import Entites.IJoueTour;
 import Entites.Obstacle;
 import Entites.Plante;
 import Utilitaires.EssaisDepassesException;
@@ -203,29 +204,33 @@ public final class Labyrinthe {
             return true;
         }
 
-        HashMap<Animal, Vecteur> prochainePosition = new HashMap<>();
+        HashMap<IJoueTour, Vecteur> prochainePosition = new HashMap<>();
 
         // On demande au joueur de deplacer son animal
         prochainePosition.put(joueur.getAnimal(), joueur.joueTour(this));
 
         for (Entite entite : entites) {
+            if (entite == joueur.getAnimal()) {
+                continue;
+            }
             // Si l'entite est un animal, il joue un tour et renvoie sa prochaine position
-            if (entite instanceof Animal && entite != joueur.getAnimal()) {
-                Animal animal = (Animal) entite;
+            if (entite instanceof IJoueTour) {
+                IJoueTour animal = (IJoueTour) entite;
                 prochainePosition.put(animal, animal.joueTour(this));
             }
         }
 
         // On supprime d'abord toutes les entites qui se font manger
-        for (Map.Entry<Animal, Vecteur> entry : prochainePosition.entrySet()) {
-            entites.removeIf(entite -> entite.getPosition().equals(entry.getValue()) && entry.getKey().peutManger(entite));
+        for (Map.Entry<IJoueTour, Vecteur> entry : prochainePosition.entrySet()) {
+            if (entry.getKey() instanceof Animal) {
+                Animal animal = (Animal) entry.getKey();
+                entites.removeIf(entite -> entite.getPosition().equals(entry.getValue()) && animal.peutManger(entite));
+            }
         }
 
         // Puis on fait bouger toutes les entites
-        for (Map.Entry<Animal, Vecteur> entry : prochainePosition.entrySet()) {
-            if (peutBouger(entry.getValue(), entry.getKey())) {
-                entry.getKey().setPosition(entry.getValue());
-            }
+        for (Map.Entry<IJoueTour, Vecteur> entry : prochainePosition.entrySet()) {
+            entry.getKey().bouge(this, entry.getValue());
         }
 
         return false;

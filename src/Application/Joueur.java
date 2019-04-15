@@ -1,12 +1,13 @@
 package Application;
 
 import Entites.Animal;
+import Entites.IJoueTour;
 import Labyrinthe.Labyrinthe;
 import Utilitaires.Vecteur;
 
 import java.util.Scanner;
 
-public final class Joueur {
+public final class Joueur implements IJoueTour {
     private final Animal animal;
 
     Joueur() {
@@ -42,6 +43,7 @@ public final class Joueur {
         return animal;
     }
 
+    @Override
     public Vecteur joueTour(Labyrinthe labyrinthe) {
         Scanner scanner = new Scanner(System.in);
 
@@ -122,5 +124,10 @@ public final class Joueur {
 
             return prochainePos;
         }
+    }
+
+    @Override
+    public void bouge(Labyrinthe labyrinthe, Vecteur position) {
+        animal.bouge(labyrinthe, position);
     }
 }
