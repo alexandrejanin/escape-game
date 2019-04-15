@@ -1,42 +1,44 @@
-public class Rectangle {
+package Labyrinthe;
+
+final class Rectangle {
     private int x, y, largeur, hauteur;
 
-    public Rectangle(int x, int y, int largeur, int hauteur) {
+    Rectangle(int x, int y, int largeur, int hauteur) {
         this.x = x;
         this.y = y;
         this.largeur = largeur;
         this.hauteur = hauteur;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
-    public int getLargeur() {
+    int getLargeur() {
         return largeur;
     }
 
-    public int getHauteur() {
+    int getHauteur() {
         return hauteur;
     }
 
-    public int getDroite() {
+    int getDroite() {
         return x + largeur;
     }
 
-    public int getGauche() {
+    int getGauche() {
         return x;
     }
 
-    public int getHaut() {
+    int getHaut() {
         return y;
     }
 
-    public int getBas() {
+    int getBas() {
         return y + hauteur;
     }
 }
