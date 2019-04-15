@@ -18,5 +18,14 @@ public abstract class Obstacle extends Entite {
         }
     }
 
+    public static String listeObstacles() {
+        Vecteur v = new Vecteur(0, 0);
+        StringBuilder string = new StringBuilder("Obstacles:\n");
+        for (Obstacle obstacle : new Obstacle[]{new Rocher(v), new Trou(v)}) {
+            string.append(obstacle.getNom()).append(": ").append(obstacle.getCar()).append('\n');
+        }
+        return string.toString();
+    }
+
     public abstract boolean peutPasser(Animal animal);
 }

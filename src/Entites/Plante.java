@@ -30,6 +30,16 @@ public final class Plante extends Entite {
         return new Plante(position, "Carotte", '!');
     }
 
+    public static String listePlantes() {
+        Vecteur v = new Vecteur(0, 0);
+        StringBuilder string = new StringBuilder("Plantes:\n");
+        for (Plante plante : new Plante[]{herbes(v), carotte(v)}) {
+            string.append(plante.getNom()).append(": ").append(plante.getCar()).append('\n');
+        }
+        return string.toString();
+    }
+
+
     @Override
     public Character getCar() {
         return car;

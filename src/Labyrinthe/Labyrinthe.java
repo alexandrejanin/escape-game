@@ -191,9 +191,9 @@ public final class Labyrinthe {
         return true;
     }
 
-    // Step toutes les entites
+    // Fais jouer le joueur puis les animaux
     // Renvoie true si la partie est finie
-    public boolean step(Joueur joueur) {
+    public boolean joueTour(Joueur joueur) {
         if (joueur.getAnimal().getPosition().equals(sortie)) {
             System.out.println("Félicitations! Tu as gagné!");
             return true;
@@ -212,7 +212,7 @@ public final class Labyrinthe {
             // Si l'entite est un animal, il joue un tour et renvoie sa prochaine position
             if (entite instanceof Animal && entite != joueur.getAnimal()) {
                 Animal animal = (Animal) entite;
-                prochainePosition.put(animal, animal.step(this));
+                prochainePosition.put(animal, animal.joueTour(this));
             }
         }
 

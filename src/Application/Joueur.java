@@ -31,7 +31,11 @@ public final class Joueur {
 
         animal = animaux[selection - 1];
 
-        System.out.println("Vous avez choisi: " + animal);
+        System.out.print("Vous avez choisi: " + animal + "\nPeut manger: ");
+        for (String proie : animal.getProies()) {
+            System.out.print(proie + " ");
+        }
+        System.out.println();
     }
 
     public Animal getAnimal() {

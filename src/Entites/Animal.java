@@ -85,6 +85,19 @@ public final class Animal extends Entite {
         );
     }
 
+    public static String listeAnimaux() {
+        Vecteur v = new Vecteur(0, 0);
+        StringBuilder string = new StringBuilder("Animaux:\n");
+        for (Animal animal : new Animal[]{lion(v), gazelle(v), zebu(v), lapin(v)}) {
+            string.append(animal.getNom()).append(": ").append(animal.getCar()).append(" (mange:");
+            for (String proie : animal.getProies()) {
+                string.append(" ").append(proie);
+            }
+            string.append(")\n");
+        }
+        return string.toString();
+    }
+
     @Override
     public Character getCar() {
         return car;
@@ -99,6 +112,10 @@ public final class Animal extends Entite {
         return taille;
     }
 
+    public String[] getProies() {
+        return proies.clone();
+    }
+
     public boolean peutManger(Entite entite) {
         for (String proie : proies) {
             if (proie.equals(entite.getNom())) {
@@ -109,7 +126,7 @@ public final class Animal extends Entite {
     }
 
     // Renvoie l'animal a manger
-    public Vecteur step(Labyrinthe labyrinthe) {
+    public Vecteur joueTour(Labyrinthe labyrinthe) {
         Entite proiePlusProche = null;
         for (Entite entite : labyrinthe.getEntites()) {
 
