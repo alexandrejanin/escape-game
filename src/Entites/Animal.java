@@ -37,7 +37,7 @@ public final class Animal extends Entite implements IJoueTour {
         } else if (random < .80) {
             return zebu(position);
         } else {
-            return lapin(position);
+            return suricate(position);
         }
     }
 
@@ -74,21 +74,21 @@ public final class Animal extends Entite implements IJoueTour {
         );
     }
 
-    public static Animal lapin(Vecteur position) {
+    public static Animal suricate(Vecteur position) {
         return new Animal(
                 position,
-                "Lapin",
-                'l',
+                "Suricate",
+                'S',
                 40,
                 50,
-                new String[]{"Carotte"}
+                new String[]{"Insectes"}
         );
     }
 
     public static String listeAnimaux() {
         Vecteur v = new Vecteur(0, 0);
         StringBuilder string = new StringBuilder("Animaux:\n");
-        for (Animal animal : new Animal[]{lion(v), gazelle(v), zebu(v), lapin(v)}) {
+        for (Animal animal : new Animal[]{lion(v), gazelle(v), zebu(v), suricate(v)}) {
             string.append(animal.getNom()).append(": ").append(animal.getCar()).append(" (mange:");
             for (String proie : animal.getProies()) {
                 string.append(" ").append(proie);

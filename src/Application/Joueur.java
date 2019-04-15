@@ -16,7 +16,7 @@ public final class Joueur implements IJoueTour {
                 Animal.lion(new Vecteur(0, 0)),
                 Animal.gazelle(new Vecteur(0, 0)),
                 Animal.zebu(new Vecteur(0, 0)),
-                Animal.lapin(new Vecteur(0, 0))
+                Animal.suricate(new Vecteur(0, 0))
         };
 
         System.out.println("Selectionnez un animal:");

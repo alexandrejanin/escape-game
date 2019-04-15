@@ -10,7 +10,7 @@ import Entites.Animal;
 import Entites.Entite;
 import Entites.IJoueTour;
 import Entites.Obstacle;
-import Entites.Plante;
+import Entites.Comestible;
 import Utilitaires.EssaisDepassesException;
 import Utilitaires.Random;
 import Utilitaires.Vecteur;
@@ -113,7 +113,7 @@ public final class Labyrinthe {
                 y = Random.getInt(0, hauteur - 1);
             } while (getCase(x, y) == Case.Mur);
 
-            entites.add(Plante.aleatoire(new Vecteur(x, y)));
+            entites.add(Comestible.aleatoire(new Vecteur(x, y)));
         }
 
         // Ajoute animaux
@@ -256,7 +256,7 @@ public final class Labyrinthe {
 
         // puis plantes
         for (Entite entite : entites) {
-            if (entite instanceof Plante) {
+            if (entite instanceof Comestible) {
                 characters[entite.getY()][entite.getX()] = entite.getCar();
             }
         }
